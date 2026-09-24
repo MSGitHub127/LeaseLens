@@ -1,0 +1,27 @@
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      LEASELENS_ENVIRONMENT: production
+      LEASELENS_SECRET_KEY: ${LEASELENS_SECRET_KEY:?set a strong secret in your .env}
+      LEASELENS_ENCRYPTION_KEY: ${LEASELENS_ENCRYPTION_KEY:?set a Fernet key in your .env}
+      LEASELENS_LLM_PROVIDER: ${LEASELENS_LLM_PROVIDER:-mock}
+      LEASELENS_ANTHROPIC_API_KEY: ${LEASELENS_ANTHROPIC_API_KEY:-}
+      LEASELENS_ALLOWED_ORIGINS: '["http://localhost:8080"]'
+    volumes:
+      - leaselens-data:/app/data
+    restart: unless-stopped
+
+  frontend:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./frontend:/usr/share/nginx/html:ro
+    depends_on:
+      - api
+
+volumes:
+  leaselens-data:
