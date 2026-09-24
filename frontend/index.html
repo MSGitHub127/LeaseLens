@@ -338,10 +338,10 @@
             <button data-sample="notice" data-target="A">Try a sample notice</button>
             <button data-sample="sublease" data-target="A">Try a sample sublease</button>
           </div>
-          <label for="docA" class="visually-hidden" style="position:absolute;left:-9999px;">Document A text</label>
-          <textarea class="doc-input" id="docA" placeholder="Paste your lease, sublease, or notice text here…"></textarea>
+          <label for="docA" class="visually-hidden" style="position:absolute;left:-9999px;">Your document text</label>
+          <textarea class="doc-input" id="docA" placeholder="Paste your lease, sublease, or notice text here…" aria-label="Your document text to analyze"></textarea>
           <div class="file-row">
-            <label for="fileA">Upload PDF, Photo, or Text <input type="file" id="fileA" accept=".txt,.pdf,.png,.jpg,.jpeg,.webp" style="display:none" /></label>
+            <label for="fileA">Upload PDF, Photo, or Text <input type="file" id="fileA" accept=".txt,.pdf,.png,.jpg,.jpeg,.webp" style="display:none" aria-label="Upload document file for document A" /></label>
             <span id="fileANote"></span>
           </div>
         </div>
@@ -352,9 +352,10 @@
           <div class="sample-buttons">
             <button data-sample="lease-alt" data-target="B">Try a modified sample</button>
           </div>
-          <textarea class="doc-input" id="docB" placeholder="Paste the second document's text here…"></textarea>
+          <label for="docB" class="visually-hidden" style="position:absolute;left:-9999px;">Second document text</label>
+          <textarea class="doc-input" id="docB" placeholder="Paste the second document's text here…" aria-label="Second document text to compare against"></textarea>
           <div class="file-row">
-            <label for="fileB">Upload PDF, Photo, or Text <input type="file" id="fileB" accept=".txt,.pdf,.png,.jpg,.jpeg,.webp" style="display:none" /></label>
+            <label for="fileB">Upload PDF, Photo, or Text <input type="file" id="fileB" accept=".txt,.pdf,.png,.jpg,.jpeg,.webp" style="display:none" aria-label="Upload document file for document B" /></label>
             <span id="fileBNote"></span>
           </div>
         </div>

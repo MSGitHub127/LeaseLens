@@ -37,9 +37,10 @@ def test_security_headers_present():
     res = client.get("/api/health")
     assert res.status_code == 200
     assert res.headers.get("X-Content-Type-Options") == "nosniff"
-    assert res.headers.get("X-Frame-Options") == "DENY"
+    assert res.headers.get("X-Frame-Options") == "SAMEORIGIN"
     assert res.headers.get("Referrer-Policy") == "strict-origin-when-cross-origin"
     assert "default-src 'self'" in res.headers.get("Content-Security-Policy", "")
+    assert "frame-ancestors" in res.headers.get("Content-Security-Policy", "")
 
 
 def test_enhanced_rag_stemming_and_synonyms():

@@ -138,7 +138,7 @@ Tenants preparing to visit a tenant legal clinic, legal aid society, or private 
 ### 5. Privacy-by-Design & Security Hardening
 - **8-Category PII Redaction**: Masks SSNs, dates of birth, street addresses, credit cards, bank accounts, phone numbers, emails, and IP addresses before text is stored or sent to an LLM.
 - **Fernet Encryption at Rest**: Encrypted in the database with AES-128.
-- **Defensive HTTP Security Headers**: Injects `Content-Security-Policy`, `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy`, and `Permissions-Policy`.
+- **Defensive HTTP Security Headers**: Injects `Content-Security-Policy` (with `frame-ancestors`), `X-Content-Type-Options: nosniff`, `X-Frame-Options: SAMEORIGIN`, `Referrer-Policy`, and `Permissions-Policy`.
 - **Pluggable Distributed Rate Limiting**: In-memory token bucket by default, with native Redis rate limiting via `LEASELENS_REDIS_URL`.
 - **Data Auto-Purge**: Stored records automatically expire after 30 days and are purged on startup.
 
