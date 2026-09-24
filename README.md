@@ -3,8 +3,9 @@
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.12%20%7C%203.13-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python Version" />
   <img src="https://img.shields.io/badge/FastAPI-0.115-009688?style=for-the-badge&logo=fastapi&logoColor=white" alt="FastAPI" />
+  <img src="https://img.shields.io/badge/Google_Cloud_Run-Live_Deploy-4285F4?style=for-the-badge&logo=googlecloud&logoColor=white" alt="Google Cloud Run" />
   <img src="https://img.shields.io/badge/Anthropic-Claude%20Vision-D97706?style=for-the-badge&logo=anthropic&logoColor=white" alt="Claude Vision" />
-  <img src="https://img.shields.io/badge/Tests-82%20Passing%20(100%25)-success?style=for-the-badge&logo=pytest&logoColor=white" alt="Tests" />
+  <img src="https://img.shields.io/badge/Tests-83%20Passing%20(100%25)-success?style=for-the-badge&logo=pytest&logoColor=white" alt="Tests" />
   <img src="https://img.shields.io/badge/Code%20Style-Ruff%20Clean-black?style=for-the-badge&logo=ruff&logoColor=white" alt="Ruff" />
   <img src="https://img.shields.io/badge/Security-Fernet%20AES--128%20%2B%20PII%20Redacted-blueviolet?style=for-the-badge&logo=shield&logoColor=white" alt="Security" />
   <img src="https://img.shields.io/badge/Accessibility-WCAG%202.1%20Compliant-brightgreen?style=for-the-badge&logo=w3c&logoColor=white" alt="Accessibility" />
@@ -15,10 +16,14 @@
 </h3>
 
 <p align="center">
-  <em>Built for the Legal GenAI Hackathon Challenge — <strong>Tenant Vertical</strong></em>
+  <em>Built for the Legal GenAI Hackathon Challenge — <strong>Tenant Vertical</strong></em><br/>
+  🚀 <strong>Live Demo</strong>: <a href="https://leaselens-162669160069.us-central1.run.app" target="_blank"><strong>https://leaselens-162669160069.us-central1.run.app</strong></a>
 </p>
 
 ---
+
+> [!TIP]
+> 🌐 **Live Cloud Demo**: Try LeaseLens directly in your browser on Google Cloud Run: [https://leaselens-162669160069.us-central1.run.app](https://leaselens-162669160069.us-central1.run.app) (Swagger docs at [/docs](https://leaselens-162669160069.us-central1.run.app/docs)).
 
 > [!IMPORTANT]
 > **Information, Not Legal Advice**: LeaseLens empowers renters to understand complex contracts, compare terms, and spot predatory clauses. Every output clearly provides pointers to certified tenant rights clinics, housing advocates, and licensed attorneys. State-specific figures (deposit limits, notice windows) are illustrative examples parameterized in `app/rubric.py`.
@@ -145,8 +150,16 @@ Tenants preparing to visit a tenant legal clinic, legal aid society, or private 
 ---
 
 ## 🚀 Quickstart
-
-### Option 1: Standalone Browser Mode (Zero Backend Required)
+ 
++### Option 0: Live Cloud Demo (Instant Access)
++Visit the production deployment on Google Cloud Run:
++- **Web Application**: [https://leaselens-162669160069.us-central1.run.app](https://leaselens-162669160069.us-central1.run.app)
++- **Swagger REST API Docs**: [https://leaselens-162669160069.us-central1.run.app/docs](https://leaselens-162669160069.us-central1.run.app/docs)
++- **Health Check**: [https://leaselens-162669160069.us-central1.run.app/api/health](https://leaselens-162669160069.us-central1.run.app/api/health)
++
++---
++
++### Option 1: Standalone Browser Mode (Zero Backend Required)
 Evaluate the full UI, rubric engine, PII redaction, PDF extraction, and Q&A immediately:
 1. Double click [`frontend/index.html`](file:///C:/Users/Manan%20Shah/Downloads/LeaseLens/leaselens/frontend/index.html) or open it in any browser.
 2. Click **"Try a sample lease"**, **"Try a sample notice"**, or upload a PDF/photo.
