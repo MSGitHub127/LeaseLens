@@ -35,6 +35,13 @@ def test_health_check(client):
     assert resp.json() == {"status": "ok"}
 
 
+def test_root_serves_frontend(client):
+    resp = client.get("/")
+    assert resp.status_code == 200
+    assert "LeaseLens" in resp.text
+    assert "<html" in resp.text.lower()
+
+
 def test_upload_requires_authentication(client):
     resp = client.post("/api/documents", files={"file": ("lease.txt", SAMPLE_LEASE.encode(), "text/plain")})
     assert resp.status_code == 401

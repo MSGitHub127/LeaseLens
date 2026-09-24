@@ -767,14 +767,15 @@
       };
       fileReader.readAsArrayBuffer(file);
     } else if (["png", "jpg", "jpeg", "webp"].indexOf(ext) !== -1) {
+      var apiBase = (window.location.protocol === "file:" || window.location.origin === "null") ? "http://localhost:8000" : "";
       el(noteId).textContent = "Uploading " + file.name + " for photo transcription…";
       // Attempt backend transcription
-      fetch("http://localhost:8000/api/session", { method: "POST" })
+      fetch(apiBase + "/api/session", { method: "POST" })
         .then(function (res) { return res.json(); })
         .then(function (sessionData) {
           var form = new FormData();
           form.append("file", file);
-          return fetch("http://localhost:8000/api/documents", {
+          return fetch(apiBase + "/api/documents", {
             method: "POST",
             headers: { "Authorization": "Bearer " + sessionData.access_token },
             body: form
@@ -788,7 +789,7 @@
           el(noteId).textContent = file.name + " transcribed successfully via API!";
           announce("Photo transcribed successfully.");
           // Also fetch analysis
-          fetch("http://localhost:8000/api/documents/" + docData.document_id + "/analyze", {
+          fetch(apiBase + "/api/documents/" + docData.document_id + "/analyze", {
             method: "POST",
             headers: { "Authorization": "Bearer " + docData.document_id } // session
           }).catch(function () {});
