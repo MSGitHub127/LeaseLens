@@ -5,10 +5,10 @@
   <img src="https://img.shields.io/badge/FastAPI-0.115-009688?style=for-the-badge&logo=fastapi&logoColor=white" alt="FastAPI" />
   <img src="https://img.shields.io/badge/Google_Cloud_Run-Live_Deploy-4285F4?style=for-the-badge&logo=googlecloud&logoColor=white" alt="Google Cloud Run" />
   <img src="https://img.shields.io/badge/Anthropic-Claude%20Vision-D97706?style=for-the-badge&logo=anthropic&logoColor=white" alt="Claude Vision" />
-  <img src="https://img.shields.io/badge/Tests-83%20Passing%20(100%25)-success?style=for-the-badge&logo=pytest&logoColor=white" alt="Tests" />
+  <img src="https://img.shields.io/badge/Tests-86%20Passing%20(100%25)-success?style=for-the-badge&logo=pytest&logoColor=white" alt="Tests" />
   <img src="https://img.shields.io/badge/Code%20Style-Ruff%20Clean-black?style=for-the-badge&logo=ruff&logoColor=white" alt="Ruff" />
   <img src="https://img.shields.io/badge/Security-Fernet%20AES--128%20%2B%20PII%20Redacted-blueviolet?style=for-the-badge&logo=shield&logoColor=white" alt="Security" />
-  <img src="https://img.shields.io/badge/Accessibility-WCAG%202.1%20Compliant-brightgreen?style=for-the-badge&logo=w3c&logoColor=white" alt="Accessibility" />
+  <a href="ACCESSIBILITY.md"><img src="https://img.shields.io/badge/Accessibility-WCAG%202.1%20AA%20%2F%20AAA-brightgreen?style=for-the-badge&logo=w3c&logoColor=white" alt="Accessibility" /></a>
 </p>
 
 <h3 align="center">
@@ -45,20 +45,22 @@ It is powered by a deterministic **Context-Aware Rubric Engine**:
 
 ---
 
-## 🎯 Problem Statement & Hackathon Alignment Matrix
+## 🎯 Problem Statement & Legal GenAI Solution Alignment
 
-LeaseLens was engineered specifically to address every use case outlined in the Legal GenAI Hackathon challenge:
+Over 44 million renter households in the United States operate under profound information asymmetry: landlords employ legal counsel to draft multi-page, legally dense leases embedded with hidden fees, vague repair obligations, and rights waivers. Over 90% of tenants navigate these agreements and eviction threats without legal representation.
 
-| Hackathon Potential Use Case | LeaseLens Solution & Implementation | Primary Module & Endpoint |
+LeaseLens directly solves the core challenges outlined in the **Legal GenAI Challenge (Tenant Vertical)**:
+
+| Hackathon Objective | LeaseLens Implementation & Solution | Repository Module & REST Endpoint |
 | :--- | :--- | :--- |
-| **1. Simplifying complex legal documents** | Plain-language AI summaries calibrated to an ~8th-grade reading level; UI Plain-Language toggle. | [`app/llm/anthropic_provider.py`](file:///c:/Users/Manan%20Shah/Downloads/LeaseLens/leaselens/app/llm/anthropic_provider.py) (`plain_language_summary`) |
-| **2. Comparing contracts, agreements, or policies** | Side-by-side contract diff engine highlighting missing clauses, modified terms, and risk changes. | [`app/compare.py`](file:///c:/Users/Manan%20Shah/Downloads/LeaseLens/leaselens/app/compare.py), `/api/documents/compare` |
-| **3. Highlighting important clauses, obligations & risks** | Context-Aware Rubric Engine categorizing findings into 5 areas with High/Medium/Low severity ratings. | [`app/rubric.py`](file:///c:/Users/Manan%20Shah/Downloads/LeaseLens/leaselens/app/rubric.py), [`app/extraction.py`](file:///c:/Users/Manan%20Shah/Downloads/LeaseLens/leaselens/app/extraction.py), Protection Score (0–100) |
-| **4. Answering questions based on provided documents** | Grounded Q&A assistant citing verbatim contract provisions using stemmed TF-Cosine RAG. | [`app/routers/qa.py`](file:///c:/Users/Manan%20Shah/Downloads/LeaseLens/leaselens/app/routers/qa.py), [`app/rag.py`](file:///c:/Users/Manan%20Shah/Downloads/LeaseLens/leaselens/app/rag.py) (`/api/documents/{id}/ask`) |
-| **5. Helping users understand options & next steps** | Dynamic action checklist splitting items into *"Ask Before Signing"* and *"Confirm in Writing"*. | [`app/checklist.py`](file:///c:/Users/Manan%20Shah/Downloads/LeaseLens/leaselens/app/checklist.py) (`generate_checklist`), `/api/documents/{id}/checklist` |
-| **6. Generating summaries, checklists & actionable outputs** | Algorithmic Tenant Protection Score (0–100), category health dials, and prioritized task checklists. | [`app/rubric.py`](file:///c:/Users/Manan%20Shah/Downloads/LeaseLens/leaselens/app/rubric.py) (`calculate_tenant_protection_score`) |
-| **7. Helping users prepare for a legal professional** | One-click export of structured **Legal Aid Consultation Brief (.md)** with pre-formulated legal questions. | [`app/checklist.py`](file:///c:/Users/Manan%20Shah/Downloads/LeaseLens/leaselens/app/checklist.py) (`generate_consultation_brief`), `/api/documents/{id}/export-brief` |
-| **8. Information vs. Legal Advice Safeguard** | Prominent disclaimers, automatic advice-pattern interception, and certified legal clinic pointers. | [`app/security.py`](file:///c:/Users/Manan%20Shah/Downloads/LeaseLens/leaselens/app/security.py), [`app/llm/anthropic_provider.py`](file:///c:/Users/Manan%20Shah/Downloads/LeaseLens/leaselens/app/llm/anthropic_provider.py) |
+| **1. Simplifying complex legal documents** | Plain-language AI summaries calibrated to an ~8th-grade reading level; UI Plain-Language toggle; Web Speech API voice playback. | [`app/llm/anthropic_provider.py`](app/llm/anthropic_provider.py) (`plain_language_summary`) |
+| **2. Comparing contracts & agreements** | Side-by-side contract diff engine highlighting missing clauses, modified terms, and risk changes between drafts. | [`app/compare.py`](app/compare.py), `POST /api/documents/compare` |
+| **3. Highlighting clauses, obligations & risks** | Context-Aware Rubric Engine categorizing findings into 5 areas with High/Medium/Low severity ratings and statutory state rules. | [`app/rubric.py`](app/rubric.py), [`app/extraction.py`](app/extraction.py) |
+| **4. Answering questions based on documents** | Grounded Q&A assistant citing verbatim contract provisions using stemmed TF-Cosine RAG without hallucinating. | [`app/routers/qa.py`](app/routers/qa.py), [`app/rag.py`](app/rag.py) (`/api/documents/{id}/ask`) |
+| **5. Helping users understand options & next steps** | Dynamic action checklist splitting items into *"Ask Before Signing"* and *"Confirm in Writing"*. | [`app/checklist.py`](app/checklist.py) (`generate_checklist`), `/api/documents/{id}/checklist` |
+| **6. Actionable outputs & visual scoring** | Algorithmic Tenant Protection Score (0–100), category health breakdown dials, and prioritized task checklists. | [`app/rubric.py`](app/rubric.py) (`calculate_tenant_protection_score`) |
+| **7. Preparing users for legal professionals** | One-click export of structured **Legal Aid Consultation Brief (.md)** with pre-formulated housing questions. | [`app/checklist.py`](app/checklist.py) (`generate_consultation_brief`), `/api/documents/{id}/export-brief` |
+| **8. Ethics & Unauthorized Practice of Law (UPL)** | Prominent disclaimers, automatic advice-pattern interception, and certified legal clinic referral pointers. | [`app/security.py`](app/security.py), [`app/qa.py`](app/qa.py) |
 
 ---
 
@@ -113,11 +115,11 @@ LeaseLens was engineered specifically to address every use case outlined in the 
 
 | Pipeline Stage | Module | Input & Processing | Output & Guarantees |
 | :--- | :--- | :--- | :--- |
-| **1. Ingestion** | [`app/parsing.py`](file:///C:/Users/Manan%20Shah/Downloads/LeaseLens/leaselens/app/parsing.py) | Digital PDFs (`pdfplumber`), Scans (`pypdfium2`), Photos (`Pillow`), Word, TXT | Zero commercial parser API costs; 100% local extraction |
-| **2. Security** | [`app/security.py`](file:///C:/Users/Manan%20Shah/Downloads/LeaseLens/leaselens/app/security.py) | Magic-byte check, 8-pattern regex masking, Fernet AES-128 encryption | Sensitive PII (SSN, DOB, Address, Cards) never touches logs or LLMs |
-| **3. Context Engine** | [`app/rubric.py`](file:///C:/Users/Manan%20Shah/Downloads/LeaseLens/leaselens/app/rubric.py) | Document type detection (Lease, Sublease, Notice) + US Jurisdiction | Selects context-specific checklists and statutory parameters |
-| **4. Hybrid Intelligence** | [`app/llm/`](file:///C:/Users/Manan%20Shah/Downloads/LeaseLens/leaselens/app/llm), [`app/rag.py`](file:///C:/Users/Manan%20Shah/Downloads/LeaseLens/leaselens/app/rag.py) | Claude 3.5 Sonnet Vision or MockProvider + Stemmed TF-Cosine RAG | Evaluates clauses against rubric rules without hallucinating |
-| **5. Actionable Deliverables** | [`app/checklist.py`](file:///C:/Users/Manan%20Shah/Downloads/LeaseLens/leaselens/app/checklist.py) | Synthesizes findings, scores, and legal aid intake packet | Produces 0–100 score, prioritized checklist, and `.md` brief |
+| **1. Ingestion** | [`app/parsing.py`](app/parsing.py) | Digital PDFs (`pdfplumber`), Scans (`pypdfium2`), Photos (`Pillow`), Word, TXT | Zero commercial parser API costs; 100% local extraction |
+| **2. Security** | [`app/security.py`](app/security.py) | Magic-byte check, 8-pattern regex masking, Fernet AES-128 encryption, prompt-injection defense | Sensitive PII (SSN, DOB, Address, Cards) never touches logs or LLMs |
+| **3. Context Engine** | [`app/rubric.py`](app/rubric.py) | Document type detection (Lease, Sublease, Notice) + US Jurisdiction | Selects context-specific checklists and statutory parameters |
+| **4. Hybrid Intelligence** | [`app/llm/`](app/llm/), [`app/rag.py`](app/rag.py) | Claude 3.5 Sonnet Vision or MockProvider + Stemmed TF-Cosine RAG | Evaluates clauses against rubric rules without hallucinating |
+| **5. Actionable Deliverables** | [`app/checklist.py`](app/checklist.py) | Synthesizes findings, scores, and legal aid intake packet | Produces 0–100 score, prioritized checklist, and `.md` brief |
 
 ---
 
@@ -168,19 +170,19 @@ Tenants preparing to visit a tenant legal clinic, legal aid society, or private 
 
 ## 🚀 Quickstart
  
-+### Option 0: Live Cloud Demo (Instant Access)
-+Visit the production deployment on Google Cloud Run:
-+- **Web Application**: [https://leaselens-162669160069.us-central1.run.app](https://leaselens-162669160069.us-central1.run.app)
-+- **Swagger REST API Docs**: [https://leaselens-162669160069.us-central1.run.app/docs](https://leaselens-162669160069.us-central1.run.app/docs)
-+- **Health Check**: [https://leaselens-162669160069.us-central1.run.app/api/health](https://leaselens-162669160069.us-central1.run.app/api/health)
-+
-+---
-+
-+### Option 1: Standalone Browser Mode (Zero Backend Required)
+### Option 0: Live Cloud Demo (Instant Access)
+Visit the production deployment on Google Cloud Run:
+- **Web Application**: [https://leaselens-162669160069.us-central1.run.app](https://leaselens-162669160069.us-central1.run.app)
+- **Swagger REST API Docs**: [https://leaselens-162669160069.us-central1.run.app/docs](https://leaselens-162669160069.us-central1.run.app/docs)
+- **Health Check**: [https://leaselens-162669160069.us-central1.run.app/api/health](https://leaselens-162669160069.us-central1.run.app/api/health)
+
+---
+
+### Option 1: Standalone Browser Mode (Zero Backend Required)
 Evaluate the full UI, rubric engine, PII redaction, PDF extraction, and Q&A immediately:
-1. Double click [`frontend/index.html`](file:///C:/Users/Manan%20Shah/Downloads/LeaseLens/leaselens/frontend/index.html) or open it in any browser.
+1. Double click [`frontend/index.html`](frontend/index.html) or open it in any browser.
 2. Click **"Try a sample lease"**, **"Try a sample notice"**, or upload a PDF/photo.
-3. Review findings, adjust text size, switch to high contrast, or download the consultation brief.
+3. Review findings, adjust text size, switch to high contrast, listen to audio readout, or download the consultation brief.
 
 ---
 

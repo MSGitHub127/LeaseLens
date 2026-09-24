@@ -14,24 +14,24 @@
     --bg: #EEF1EA;
     --bg-panel: #F7F8F4;
     --bg-inset: #E3E6DD;
-    --ink: #1C2733;
-    --ink-soft: #4B5563;
-    --ink-faint: #78807A;
-    --accent: #1F5C57;
+    --ink: #111A24;
+    --ink-soft: #24303A;
+    --ink-faint: #2D3732;
+    --accent: #134B46;
     --accent-ink: #FFFFFF;
-    --accent-soft: #DCE9E6;
-    --stamp: #9A5F17;
-    --border: #D3D6C9;
-    --border-strong: #B7BCA9;
-    --risk-high: #A8271E;
-    --risk-high-bg: #F7E4E1;
-    --risk-medium: #8A5A0A;
-    --risk-medium-bg: #F5ECD9;
-    --risk-low: #2C6B4A;
+    --accent-soft: #CFDFDC;
+    --stamp: #6B3B00;
+    --border: #B7BCA9;
+    --border-strong: #78806F;
+    --risk-high: #8F160E;
+    --risk-high-bg: #FCE8E6;
+    --risk-medium: #6E4000;
+    --risk-medium-bg: #F7ECD0;
+    --risk-low: #185635;
     --risk-low-bg: #E1EEE5;
-    --risk-info: #3B5166;
+    --risk-info: #1D3B54;
     --risk-info-bg: #E4E9EE;
-    --focus-ring: #1657A6;
+    --focus-ring: #0E478C;
     --font-display: 'Source Serif 4', Georgia, 'Times New Roman', serif;
     --font-body: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
@@ -97,7 +97,7 @@
     font-family: var(--font-display); font-weight: 700; font-size: 1.3rem; letter-spacing: -0.01em;
   }
   .brand .mark em { font-style: normal; color: var(--accent); }
-  .brand .tagline { color: var(--ink-faint); font-size: 0.82rem; }
+  .brand .tagline { color: var(--ink-soft); font-size: 0.82rem; }
   .a11y-controls { display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; }
   .chip-btn {
     background: var(--bg); border: 1px solid var(--border-strong); color: var(--ink);
@@ -113,7 +113,7 @@
   }
   .hero .kicker {
     font-family: var(--font-mono); font-size: 0.72rem; color: var(--stamp);
-    text-transform: none; letter-spacing: 0.02em; display: block; margin-bottom: 0.6rem;
+    text-transform: none; letter-spacing: 0.02em; display: block; margin-bottom: 0.6rem; font-weight: 600;
   }
   .hero h1 {
     font-family: var(--font-display); font-weight: 600; font-size: clamp(1.9rem, 4vw, 2.7rem);
@@ -125,7 +125,7 @@
   .disclaimer-banner {
     display: flex; gap: 0.6rem; align-items: flex-start;
     background: var(--risk-info-bg); color: var(--risk-info); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 0.75rem 0.9rem; font-size: 0.86rem; max-width: 62ch;
+    border-radius: var(--radius); padding: 0.75rem 0.9rem; font-size: 0.86rem; max-width: 62ch; font-weight: 500;
   }
   .disclaimer-banner svg { flex-shrink: 0; margin-top: 0.15rem; }
 
@@ -134,7 +134,7 @@
   .mode-switch { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
   .mode-switch button {
     background: var(--bg-panel); border: 1px solid var(--border-strong); color: var(--ink-soft);
-    padding: 0.5rem 0.95rem; border-radius: var(--radius); cursor: pointer; font-size: 0.88rem; font-weight: 500;
+    padding: 0.5rem 0.95rem; border-radius: var(--radius); cursor: pointer; font-size: 0.88rem; font-weight: 600;
   }
   .mode-switch button[aria-pressed="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
 
@@ -145,22 +145,27 @@
   .input-grid.single { grid-template-columns: 1fr; }
   .doc-slot { padding: 1.1rem; }
   .doc-slot h2 { font-family: var(--font-display); font-size: 1.05rem; margin: 0 0 0.15rem; }
-  .doc-slot .hint { color: var(--ink-faint); font-size: 0.8rem; margin-bottom: 0.7rem; }
+  .doc-slot .hint { color: var(--ink-soft); font-size: 0.82rem; margin-bottom: 0.7rem; }
   .sample-buttons { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.7rem; }
   .sample-buttons button {
-    background: var(--bg-inset); border: 1px solid var(--border); color: var(--ink);
-    padding: 0.3rem 0.65rem; border-radius: 999px; font-size: 0.76rem; cursor: pointer;
+    background: var(--bg-panel); border: 1px solid var(--border-strong); color: var(--ink);
+    padding: 0.35rem 0.7rem; border-radius: 999px; font-size: 0.78rem; cursor: pointer; font-weight: 500;
   }
-  .sample-buttons button:hover { border-color: var(--accent); }
+  .sample-buttons button:hover { border-color: var(--accent); background: var(--accent-soft); }
   textarea.doc-input {
     width: 100%; min-height: 190px; resize: vertical; padding: 0.75rem; font-family: var(--font-body);
     font-size: 0.88rem; border: 1px solid var(--border-strong); border-radius: var(--radius); background: var(--bg);
     color: var(--ink);
   }
-  .file-row { display: flex; align-items: center; gap: 0.6rem; margin-top: 0.55rem; font-size: 0.8rem; color: var(--ink-faint); }
-  .file-row label {
+  .file-row { display: flex; align-items: center; gap: 0.6rem; margin-top: 0.55rem; font-size: 0.82rem; color: var(--ink-soft); }
+  .file-picker-label {
     border: 1px solid var(--border-strong); border-radius: var(--radius); padding: 0.35rem 0.7rem;
-    cursor: pointer; background: var(--bg);
+    cursor: pointer; background: var(--bg-panel); color: var(--ink); font-weight: 500; display: inline-flex; align-items: center; gap: 0.4rem;
+  }
+  .file-picker-label:hover { border-color: var(--accent); background: var(--accent-soft); }
+  .file-input:focus-visible + .file-picker-label, .file-picker-label:focus-visible {
+    outline: 3px solid var(--focus-ring);
+    outline-offset: 2px;
   }
   .analyze-row { display: flex; align-items: center; gap: 0.9rem; padding: 0 1.1rem 1.1rem; flex-wrap: wrap; }
   .btn-primary {
@@ -170,7 +175,7 @@
   }
   .btn-primary:hover { transform: translateY(-1px); }
   .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-  .privacy-note { font-size: 0.78rem; color: var(--ink-faint); }
+  .privacy-note { font-size: 0.82rem; color: var(--ink-soft); font-weight: 500; }
 
   /* ---------- Results ---------- */
   .results { margin-top: 1.4rem; }
@@ -284,7 +289,7 @@
 
   footer.site-footer {
     border-top: 1px solid var(--border); padding: 1.6rem 1.25rem 3rem; text-align: center;
-    color: var(--ink-faint); font-size: 0.78rem; max-width: 920px; margin: 0 auto;
+    color: var(--ink-soft); font-size: 0.82rem; max-width: 920px; margin: 0 auto;
   }
 
   @media (max-width: 760px) {
@@ -305,6 +310,7 @@
     <button class="chip-btn" id="fontUp" aria-label="Increase text size">A+</button>
     <button class="chip-btn" id="contrastToggle" aria-pressed="false">High contrast</button>
     <button class="chip-btn" id="plainToggle" aria-pressed="false">Plain language</button>
+    <button class="chip-btn" id="voiceToggle" aria-pressed="false" aria-label="Listen to analysis aloud">🔊 Read Aloud</button>
   </div>
 </header>
 
@@ -341,7 +347,8 @@
           <label for="docA" class="visually-hidden" style="position:absolute;left:-9999px;">Your document text</label>
           <textarea class="doc-input" id="docA" placeholder="Paste your lease, sublease, or notice text here…" aria-label="Your document text to analyze"></textarea>
           <div class="file-row">
-            <label for="fileA">Upload PDF, Photo, or Text <input type="file" id="fileA" accept=".txt,.pdf,.png,.jpg,.jpeg,.webp" style="display:none" aria-label="Upload document file for document A" /></label>
+            <input type="file" id="fileA" class="sr-only file-input" accept=".txt,.pdf,.png,.jpg,.jpeg,.webp" aria-label="Upload PDF, Photo, or Text for Document A" />
+            <label for="fileA" class="file-picker-label">📁 Upload PDF, Photo, or Text</label>
             <span id="fileANote"></span>
           </div>
         </div>
@@ -355,7 +362,8 @@
           <label for="docB" class="visually-hidden" style="position:absolute;left:-9999px;">Second document text</label>
           <textarea class="doc-input" id="docB" placeholder="Paste the second document's text here…" aria-label="Second document text to compare against"></textarea>
           <div class="file-row">
-            <label for="fileB">Upload PDF, Photo, or Text <input type="file" id="fileB" accept=".txt,.pdf,.png,.jpg,.jpeg,.webp" style="display:none" aria-label="Upload document file for document B" /></label>
+            <input type="file" id="fileB" class="sr-only file-input" accept=".txt,.pdf,.png,.jpg,.jpeg,.webp" aria-label="Upload PDF, Photo, or Text for Document B" />
+            <label for="fileB" class="file-picker-label">📁 Upload PDF, Photo, or Text</label>
             <span id="fileBNote"></span>
           </div>
         </div>
@@ -714,6 +722,60 @@
     if (state.docA) runAnalysis();
   });
 
+  // --- Voice / Audio Assistance (Web Speech API) ---
+  var speaking = false;
+  function speakText(textToSpeak, buttonEl) {
+    if (!('speechSynthesis' in window)) {
+      showToast("Speech synthesis is not supported in this browser.");
+      return;
+    }
+    if (speaking) {
+      window.speechSynthesis.cancel();
+      speaking = false;
+      if (buttonEl) buttonEl.textContent = "🔊 Read Aloud";
+      var vt = el("voiceToggle");
+      if (vt) { vt.setAttribute("aria-pressed", "false"); vt.textContent = "🔊 Read Aloud"; }
+      announce("Audio playback stopped.");
+      return;
+    }
+    window.speechSynthesis.cancel();
+    var utterance = new SpeechSynthesisUtterance(textToSpeak);
+    utterance.rate = 0.95;
+    utterance.pitch = 1.0;
+    utterance.onend = function() {
+      speaking = false;
+      if (buttonEl) buttonEl.textContent = "🔊 Read Aloud";
+      var vt = el("voiceToggle");
+      if (vt) { vt.setAttribute("aria-pressed", "false"); vt.textContent = "🔊 Read Aloud"; }
+      announce("Finished reading aloud.");
+    };
+    utterance.onerror = function() {
+      speaking = false;
+      if (buttonEl) buttonEl.textContent = "🔊 Read Aloud";
+      var vt = el("voiceToggle");
+      if (vt) { vt.setAttribute("aria-pressed", "false"); vt.textContent = "🔊 Read Aloud"; }
+    };
+    speaking = true;
+    if (buttonEl) buttonEl.textContent = "⏹️ Stop Audio";
+    var vt2 = el("voiceToggle");
+    if (vt2) { vt2.setAttribute("aria-pressed", "true"); vt2.textContent = "⏹️ Stop Audio"; }
+    announce("Reading summary and key findings aloud.");
+    window.speechSynthesis.speak(utterance);
+  }
+
+  el("voiceToggle").addEventListener("click", function () {
+    if (!state.docA) {
+      showToast("Analyze a document first, then click Read Aloud.");
+      return;
+    }
+    var spoken = state.docA.summary;
+    var highRisks = state.docA.findings.filter(function (f) { return !f.present && f.severity === "high"; });
+    if (highRisks.length > 0) {
+      spoken += " Important missing protections: " + highRisks.map(function (f) { return f.title; }).join(", ") + ".";
+    }
+    speakText(spoken, el("voiceToggle"));
+  });
+
   // --- Sample documents ---
   var SAMPLES = {
     lease: "RESIDENTIAL LEASE AGREEMENT\n\nThis lease is entered into between the Landlord and Tenant for the premises located in the State of California.\n\n1. RENT. Tenant agrees to pay $2,400 per month. Rent is due on the 1st of each month. A late fee of $75 applies after a 3-day grace period.\n\n2. SECURITY DEPOSIT. Tenant shall pay a security deposit of $2,400, to be returned within 21 days of move-out, less lawful deductions.\n\n3. MAINTENANCE. Landlord is responsible for maintaining the premises in a habitable condition. Tenant is responsible for minor repairs under $50.\n\n4. ENTRY. Landlord shall provide at least 24 hours notice to enter the premises except in emergencies.\n\n5. TERMINATION. Tenant may terminate this lease early by paying a fee equal to two months' rent.",
@@ -946,10 +1008,24 @@
   }
 
   function renderFindings(container) {
+    var summaryWrap = document.createElement("div");
+    summaryWrap.className = "summary-box";
     var summary = document.createElement("p");
-    summary.className = "summary-box";
+    summary.style.margin = "0 0 0.7rem 0";
     summary.textContent = state.docA.summary;
-    container.appendChild(summary);
+    summaryWrap.appendChild(summary);
+
+    var voiceBtn = document.createElement("button");
+    voiceBtn.className = "btn-secondary";
+    voiceBtn.style.fontSize = "0.8rem";
+    voiceBtn.style.padding = "0.35rem 0.75rem";
+    voiceBtn.textContent = speaking ? "⏹️ Stop Audio" : "🔊 Listen to Summary";
+    voiceBtn.setAttribute("aria-label", "Listen to this plain-language summary aloud");
+    voiceBtn.addEventListener("click", function () {
+      speakText(state.docA.summary, voiceBtn);
+    });
+    summaryWrap.appendChild(voiceBtn);
+    container.appendChild(summaryWrap);
 
     var list = document.createElement("ul");
     list.className = "finding-list";
@@ -999,6 +1075,16 @@
       announce("Downloaded legal consultation packet.");
     });
     actions.appendChild(dlBrief);
+
+    var voiceChecklist = document.createElement("button");
+    voiceChecklist.className = "btn-secondary";
+    voiceChecklist.textContent = "🔊 Read Checklist";
+    voiceChecklist.setAttribute("aria-label", "Listen to action checklist aloud");
+    voiceChecklist.addEventListener("click", function () {
+      var spokenList = items.map(function (i) { return PRIORITY_TEXT[i.priority] + ": " + i.text; }).join(". ");
+      speakText("Your prioritized action checklist: " + spokenList, voiceChecklist);
+    });
+    actions.appendChild(voiceChecklist);
 
     var copyBtn = document.createElement("button"); copyBtn.className = "btn-secondary"; copyBtn.textContent = "Copy Checklist";
     copyBtn.addEventListener("click", function () {
