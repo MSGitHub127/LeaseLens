@@ -42,6 +42,34 @@ It is powered by a deterministic **Context-Aware Rubric Engine**:
 
 ## 🏗️ System Architecture
 
+<p align="center">
+  <img src="assets/system_architecture.svg" alt="LeaseLens End-to-End System Architecture" width="100%">
+</p>
+
+### Visual Workflow Diagram (Flowchart)
+
+```mermaid
+flowchart TD
+    A["📄 1. Multi-Format Ingestion<br/>Digital & Scanned PDFs • Photos • DOCX • TXT"] --> B["🛡️ 2. Defense-in-Depth Security<br/>Magic Bytes • 8-Pattern PII Redact • Fernet AES-128"]
+    B --> C["⚖️ 3. Context-Aware Rubric Engine<br/>Deterministic Classifier • State Thresholds (CA, NY, TX)"]
+    C --> D["🧠 4. Hybrid Intelligence & RAG<br/>Claude 3.5 Sonnet Vision / MockProvider • Grounded RAG"]
+
+    subgraph Assessment["📊 Tenant Risk Assessment"]
+        E1["Tenant Protection Score<br/>0–100 Health Dial & Category Breakdown"]
+        E2["Prioritized Action Checklist<br/>Ask Before Signing • Confirm in Writing"]
+        E1 --> E2
+    end
+
+    subgraph Defense["📁 Legal Aid & Tenant Action"]
+        E3["Legal Aid Consultation Brief<br/>Downloadable Defense Packet (.md)"]
+        E4["Grounded Q&A Assistant<br/>Strict Document Excerpt Citations"]
+        E3 --> E4
+    end
+
+    D --> Assessment
+    D --> Defense
+```
+
 ### Universal Architecture Pipeline
 
 ```text
@@ -81,29 +109,6 @@ It is powered by a deterministic **Context-Aware Rubric Engine**:
 │ 0–100 health dial│     │ Ask before sign, │            │ Tenant defense   │     │ Excerpt-backed   │
 │ + risk breakdown │     │ confirm in write │            │ intake packet    │     │ citations        │
 └──────────────────┘     └──────────────────┘            └──────────────────┘     └──────────────────┘
-```
-
-### Visual Workflow Diagram
-
-```mermaid
-graph TD
-    A["📄 Upload Document / Photo<br/><i>PDF, Scanned PDF, JPG, PNG, DOCX, TXT</i>"] --> B["🛡️ Security & Privacy Guard<br/><i>Magic Bytes • 8-Pattern PII Redaction • Fernet AES-128</i>"]
-    B --> C["⚖️ Context-Aware Rubric Engine<br/><i>Deterministic Classifier • State Thresholds (CA, NY, TX)</i>"]
-    C --> D["🧠 Hybrid Intelligence Layer<br/><i>Claude 3.5 Sonnet Vision / MockProvider • Grounded RAG</i>"]
-    
-    D --> E1["📊 Tenant Protection Score<br/><i>0–100 Dial & Category Breakdown</i>"]
-    D --> E2["📋 Prioritized Checklist<br/><i>Ask Before Signing • Confirm in Writing</i>"]
-    D --> E3["📁 Legal Aid Consultation Brief<br/><i>Downloadable Defense Packet (.md)</i>"]
-    D --> E4["💬 Grounded Q&A Assistant<br/><i>Strict Document Excerpt Citations</i>"]
-
-    style A fill:#EEF1EA,stroke:#1F5C57,stroke-width:2px,color:#1C2733
-    style B fill:#F7E4E1,stroke:#A8271E,stroke-width:2px,color:#1C2733
-    style C fill:#DCE9E6,stroke:#1F5C57,stroke-width:2px,color:#1C2733
-    style D fill:#F5ECD9,stroke:#8A5A0A,stroke-width:2px,color:#1C2733
-    style E1 fill:#E1EEE5,stroke:#2C6B4A,stroke-width:2px,color:#1C2733
-    style E2 fill:#E1EEE5,stroke:#2C6B4A,stroke-width:2px,color:#1C2733
-    style E3 fill:#E1EEE5,stroke:#2C6B4A,stroke-width:2px,color:#1C2733
-    style E4 fill:#E1EEE5,stroke:#2C6B4A,stroke-width:2px,color:#1C2733
 ```
 
 ### Data Pipeline Overview
