@@ -46,30 +46,6 @@ It is powered by a deterministic **Context-Aware Rubric Engine**:
   <img src="assets/system_architecture.svg" alt="LeaseLens End-to-End System Architecture" width="100%">
 </p>
 
-### Visual Workflow Diagram (Flowchart)
-
-```mermaid
-flowchart TD
-    A["📄 1. Multi-Format Ingestion<br/>Digital & Scanned PDFs • Photos • DOCX • TXT"] --> B["🛡️ 2. Defense-in-Depth Security<br/>Magic Bytes • 8-Pattern PII Redact • Fernet AES-128"]
-    B --> C["⚖️ 3. Context-Aware Rubric Engine<br/>Deterministic Classifier • State Thresholds (CA, NY, TX)"]
-    C --> D["🧠 4. Hybrid Intelligence & RAG<br/>Claude 3.5 Sonnet Vision / MockProvider • Grounded RAG"]
-
-    subgraph Assessment["📊 Tenant Risk Assessment"]
-        E1["Tenant Protection Score<br/>0–100 Health Dial & Category Breakdown"]
-        E2["Prioritized Action Checklist<br/>Ask Before Signing • Confirm in Writing"]
-        E1 --> E2
-    end
-
-    subgraph Defense["📁 Legal Aid & Tenant Action"]
-        E3["Legal Aid Consultation Brief<br/>Downloadable Defense Packet (.md)"]
-        E4["Grounded Q&A Assistant<br/>Strict Document Excerpt Citations"]
-        E3 --> E4
-    end
-
-    D --> Assessment
-    D --> Defense
-```
-
 ### Universal Architecture Pipeline
 
 ```text
