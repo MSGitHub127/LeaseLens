@@ -42,48 +42,79 @@ It is powered by a deterministic **Context-Aware Rubric Engine**:
 
 ## 🏗️ System Architecture
 
-```mermaid
-flowchart TD
-    subgraph Ingestion["1. Multi-Format Ingestion (Zero External API Cost)"]
-        Upload["Upload / Camera Photo / Drag & Drop"] --> ExtCheck{"File Type?"}
-        ExtCheck -->|Digital PDF| PDFPlumber["pdfplumber (Local Text Extraction)"]
-        ExtCheck -->|Scanned PDF| PDFium["pypdfium2 (Page-to-Image Rendering)"]
-        ExtCheck -->|Smartphone Photo / Image| ImgVal["Pillow Image Validation (.png, .jpg, .webp)"]
-        ExtCheck -->|DOCX / Plain Text| Docx["python-docx / Native UTF-8"]
-    end
+### Universal Architecture Pipeline
 
-    subgraph Security["2. Defense-in-Depth Security & Privacy"]
-        ImgVal --> MagicCheck["Binary Magic-Byte Sniffing (%PDF, PNG, JFIF, RIFF)"]
-        PDFPlumber --> Redact["PII Redaction: 8 Regex Patterns (SSN, DOB, Address, Card, Bank, IP, Phone, Email)"]
-        PDFium --> Redact
-        MagicCheck --> Redact
-        Docx --> Redact
-        Redact --> Encrypt["Fernet AES-128 Encryption at Rest"]
-        Encrypt --> DB[(SQLite / PostgreSQL + Auto-Purge Retention)]
-    end
-
-    subgraph ContextEngine["3. Deterministic Context & Rubric Engine"]
-        Redact --> Classify["classification.py (Document Type & Jurisdiction Detection)"]
-        Classify --> Rubric["rubric.py (Dynamic Rule Selection & State Overrides)"]
-    end
-
-    subgraph AIProcessing["4. Hybrid Intelligence & RAG"]
-        Rubric --> LLMBridge{"Active Provider"}
-        LLMBridge -->|Production| Claude["Claude 3.5 Sonnet Vision (Multimodal & Extraction)"]
-        LLMBridge -->|Offline / CI / Tests| Mock["MockProvider (Deterministic Offline Engine)"]
-        Rubric --> RAG["rag.py (TF Cosine RAG + Morphological Legal Stemming)"]
-    end
-
-    subgraph Outputs["5. Actionable Tenant Deliverables"]
-        Claude --> Score["Tenant Protection Score (0-100) & Category Breakdown"]
-        Mock --> Score
-        Claude --> Findings["Clause Risk Findings (High / Medium / Low / Info)"]
-        Mock --> Findings
-        Findings --> Checklist["Checklist: Ask Before Signing / Confirm in Writing"]
-        Findings --> Brief["Legal Consultation Brief & Tenant Defense Packet (.md)"]
-        RAG --> QA["Grounded Q&A with Strict Document Excerpt Citations"]
-    end
+```text
+                    ┌─────────────────────────────────────────────────────────────┐
+                    │ 1. MULTI-FORMAT INGESTION (Zero External API Cost)          │
+                    │    • Digital PDFs (pdfplumber)   • Scanned PDFs (pypdfium2) │
+                    │    • Smartphone Photos (Pillow)  • DOCX / Plain Text        │
+                    └──────────────────────────────┬──────────────────────────────┘
+                                                   │ Raw Bytes
+                                                   ▼
+                    ┌─────────────────────────────────────────────────────────────┐
+                    │ 2. DEFENSE-IN-DEPTH PRIVACY & SECURITY GUARD                │
+                    │    • Binary magic-byte verification (%PDF, PNG, JFIF, RIFF) │
+                    │    • 8-Pattern PII Redaction (SSN, DOB, Address, Bank, etc.)│
+                    │    • Fernet AES-128 Encryption at Rest & Auto-Purge         │
+                    └──────────────────────────────┬──────────────────────────────┘
+                                                   │ Sanitized Text / Images
+                                                   ▼
+                    ┌─────────────────────────────────────────────────────────────┐
+                    │ 3. DETERMINISTIC CONTEXT & RUBRIC ENGINE                    │
+                    │    • classification.py: Doc Type + State Jurisdiction (CA)  │
+                    │    • rubric.py: Dynamic Rule Selection & State Overrides    │
+                    └──────────────────────────────┬──────────────────────────────┘
+                                                   │ Parameterized Checklist
+                                                   ▼
+                    ┌─────────────────────────────────────────────────────────────┐
+                    │ 4. HYBRID INTELLIGENCE & GROUNDED RAG                       │
+                    │    • Claude 3.5 Sonnet Vision (Production) OR               │
+                    │    • MockProvider (Deterministic, zero-cost, offline/CI)    │
+                    │    • rag.py: TF Cosine RAG + Morphological Legal Stemming   │
+                    └──────────────────────────────┬──────────────────────────────┘
+                                                   │ Evaluated Findings
+         ┌─────────────────────────┬───────────────┴───────────────┬─────────────────────────┐
+         ▼                         ▼                               ▼                         ▼
+┌──────────────────┐     ┌──────────────────┐            ┌──────────────────┐     ┌──────────────────┐
+│ TENANT SCORE     │     │ ACTION CHECKLIST │            │ LEGAL BRIEF (.MD)│     │ GROUNDED Q&A     │
+│ 0–100 health dial│     │ Ask before sign, │            │ Tenant defense   │     │ Excerpt-backed   │
+│ + risk breakdown │     │ confirm in write │            │ intake packet    │     │ citations        │
+└──────────────────┘     └──────────────────┘            └──────────────────┘     └──────────────────┘
 ```
+
+### Visual Workflow Diagram
+
+```mermaid
+graph TD
+    A["📄 Upload Document / Photo<br/><i>PDF, Scanned PDF, JPG, PNG, DOCX, TXT</i>"] --> B["🛡️ Security & Privacy Guard<br/><i>Magic Bytes • 8-Pattern PII Redaction • Fernet AES-128</i>"]
+    B --> C["⚖️ Context-Aware Rubric Engine<br/><i>Deterministic Classifier • State Thresholds (CA, NY, TX)</i>"]
+    C --> D["🧠 Hybrid Intelligence Layer<br/><i>Claude 3.5 Sonnet Vision / MockProvider • Grounded RAG</i>"]
+    
+    D --> E1["📊 Tenant Protection Score<br/><i>0–100 Dial & Category Breakdown</i>"]
+    D --> E2["📋 Prioritized Checklist<br/><i>Ask Before Signing • Confirm in Writing</i>"]
+    D --> E3["📁 Legal Aid Consultation Brief<br/><i>Downloadable Defense Packet (.md)</i>"]
+    D --> E4["💬 Grounded Q&A Assistant<br/><i>Strict Document Excerpt Citations</i>"]
+
+    style A fill:#EEF1EA,stroke:#1F5C57,stroke-width:2px,color:#1C2733
+    style B fill:#F7E4E1,stroke:#A8271E,stroke-width:2px,color:#1C2733
+    style C fill:#DCE9E6,stroke:#1F5C57,stroke-width:2px,color:#1C2733
+    style D fill:#F5ECD9,stroke:#8A5A0A,stroke-width:2px,color:#1C2733
+    style E1 fill:#E1EEE5,stroke:#2C6B4A,stroke-width:2px,color:#1C2733
+    style E2 fill:#E1EEE5,stroke:#2C6B4A,stroke-width:2px,color:#1C2733
+    style E3 fill:#E1EEE5,stroke:#2C6B4A,stroke-width:2px,color:#1C2733
+    style E4 fill:#E1EEE5,stroke:#2C6B4A,stroke-width:2px,color:#1C2733
+```
+
+### Data Pipeline Overview
+
+| Pipeline Stage | Module | Input & Processing | Output & Guarantees |
+| :--- | :--- | :--- | :--- |
+| **1. Ingestion** | [`app/parsing.py`](file:///C:/Users/Manan%20Shah/Downloads/LeaseLens/leaselens/app/parsing.py) | Digital PDFs (`pdfplumber`), Scans (`pypdfium2`), Photos (`Pillow`), Word, TXT | Zero commercial parser API costs; 100% local extraction |
+| **2. Security** | [`app/security.py`](file:///C:/Users/Manan%20Shah/Downloads/LeaseLens/leaselens/app/security.py) | Magic-byte check, 8-pattern regex masking, Fernet AES-128 encryption | Sensitive PII (SSN, DOB, Address, Cards) never touches logs or LLMs |
+| **3. Context Engine** | [`app/rubric.py`](file:///C:/Users/Manan%20Shah/Downloads/LeaseLens/leaselens/app/rubric.py) | Document type detection (Lease, Sublease, Notice) + US Jurisdiction | Selects context-specific checklists and statutory parameters |
+| **4. Hybrid Intelligence** | [`app/llm/`](file:///C:/Users/Manan%20Shah/Downloads/LeaseLens/leaselens/app/llm), [`app/rag.py`](file:///C:/Users/Manan%20Shah/Downloads/LeaseLens/leaselens/app/rag.py) | Claude 3.5 Sonnet Vision or MockProvider + Stemmed TF-Cosine RAG | Evaluates clauses against rubric rules without hallucinating |
+| **5. Actionable Deliverables** | [`app/checklist.py`](file:///C:/Users/Manan%20Shah/Downloads/LeaseLens/leaselens/app/checklist.py) | Synthesizes findings, scores, and legal aid intake packet | Produces 0–100 score, prioritized checklist, and `.md` brief |
 
 ---
 
