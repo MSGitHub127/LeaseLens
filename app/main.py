@@ -6,6 +6,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 
@@ -52,6 +53,7 @@ def create_app() -> FastAPI:
         allow_methods=["GET", "POST", "DELETE"],
         allow_headers=["Authorization", "Content-Type"],
     )
+    app.add_middleware(GZipMiddleware, minimum_size=500)
 
     @app.middleware("http")
     async def add_security_headers(request: Request, call_next):
@@ -69,6 +71,10 @@ def create_app() -> FastAPI:
             "frame-ancestors 'self' *;"
         )
         response.headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()"
+        if request.url.path == "/" or request.url.path.endswith((".js", ".css", ".svg", ".png", ".jpg", ".ico")):
+            response.headers["Cache-Control"] = "public, max-age=3600"
+        else:
+            response.headers["Cache-Control"] = "no-store, max-age=0"
         return response
 
     app.include_router(session.router)

@@ -45,6 +45,23 @@ It is powered by a deterministic **Context-Aware Rubric Engine**:
 
 ---
 
+## 🎯 Problem Statement & Hackathon Alignment Matrix
+
+LeaseLens was engineered specifically to address every use case outlined in the Legal GenAI Hackathon challenge:
+
+| Hackathon Potential Use Case | LeaseLens Solution & Implementation | Primary Module & Endpoint |
+| :--- | :--- | :--- |
+| **1. Simplifying complex legal documents** | Plain-language AI summaries calibrated to an ~8th-grade reading level; UI Plain-Language toggle. | [`app/llm/anthropic_provider.py`](file:///c:/Users/Manan%20Shah/Downloads/LeaseLens/leaselens/app/llm/anthropic_provider.py) (`plain_language_summary`) |
+| **2. Comparing contracts, agreements, or policies** | Side-by-side contract diff engine highlighting missing clauses, modified terms, and risk changes. | [`app/compare.py`](file:///c:/Users/Manan%20Shah/Downloads/LeaseLens/leaselens/app/compare.py), `/api/documents/compare` |
+| **3. Highlighting important clauses, obligations & risks** | Context-Aware Rubric Engine categorizing findings into 5 areas with High/Medium/Low severity ratings. | [`app/rubric.py`](file:///c:/Users/Manan%20Shah/Downloads/LeaseLens/leaselens/app/rubric.py), [`app/extraction.py`](file:///c:/Users/Manan%20Shah/Downloads/LeaseLens/leaselens/app/extraction.py), Protection Score (0–100) |
+| **4. Answering questions based on provided documents** | Grounded Q&A assistant citing verbatim contract provisions using stemmed TF-Cosine RAG. | [`app/routers/qa.py`](file:///c:/Users/Manan%20Shah/Downloads/LeaseLens/leaselens/app/routers/qa.py), [`app/rag.py`](file:///c:/Users/Manan%20Shah/Downloads/LeaseLens/leaselens/app/rag.py) (`/api/documents/{id}/ask`) |
+| **5. Helping users understand options & next steps** | Dynamic action checklist splitting items into *"Ask Before Signing"* and *"Confirm in Writing"*. | [`app/checklist.py`](file:///c:/Users/Manan%20Shah/Downloads/LeaseLens/leaselens/app/checklist.py) (`generate_checklist`), `/api/documents/{id}/checklist` |
+| **6. Generating summaries, checklists & actionable outputs** | Algorithmic Tenant Protection Score (0–100), category health dials, and prioritized task checklists. | [`app/rubric.py`](file:///c:/Users/Manan%20Shah/Downloads/LeaseLens/leaselens/app/rubric.py) (`calculate_tenant_protection_score`) |
+| **7. Helping users prepare for a legal professional** | One-click export of structured **Legal Aid Consultation Brief (.md)** with pre-formulated legal questions. | [`app/checklist.py`](file:///c:/Users/Manan%20Shah/Downloads/LeaseLens/leaselens/app/checklist.py) (`generate_consultation_brief`), `/api/documents/{id}/export-brief` |
+| **8. Information vs. Legal Advice Safeguard** | Prominent disclaimers, automatic advice-pattern interception, and certified legal clinic pointers. | [`app/security.py`](file:///c:/Users/Manan%20Shah/Downloads/LeaseLens/leaselens/app/security.py), [`app/llm/anthropic_provider.py`](file:///c:/Users/Manan%20Shah/Downloads/LeaseLens/leaselens/app/llm/anthropic_provider.py) |
+
+---
+
 ## 🏗️ System Architecture
 
 <p align="center">

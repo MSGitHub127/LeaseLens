@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 from dataclasses import dataclass
 
 from app.classification import ClassificationResult, classify_document
@@ -34,12 +35,19 @@ class AnalysisResult:
         return breakdown
 
 
+_ANALYSIS_CACHE: dict[str, AnalysisResult] = {}
+_MAX_CACHE_SIZE = 128
+
+
 def analyze_document(text: str) -> AnalysisResult:
     """The core pipeline: classify context, select the matching rubric, then
-    run extraction against it. This is the function that makes the
-    assistant's behavior *depend on* what kind of document and jurisdiction
-    it's looking at, rather than applying one static checklist to everything.
+    run extraction against it. Uses SHA-256 memoization for sub-millisecond
+    cached responses on subsequent checklist and brief generation calls.
     """
+    text_hash = hashlib.sha256(text.encode("utf-8")).hexdigest()
+    if text_hash in _ANALYSIS_CACHE:
+        return _ANALYSIS_CACHE[text_hash]
+
     classification = classify_document(text)
     rubric = get_rubric(classification.document_type, classification.jurisdiction)
 
@@ -47,9 +55,14 @@ def analyze_document(text: str) -> AnalysisResult:
     findings = provider.extract_clauses(text, rubric)
     summary = provider.plain_language_summary(text, findings)
 
-    return AnalysisResult(
+    result = AnalysisResult(
         classification=classification,
         rubric=rubric,
         findings=findings,
         plain_language_summary=summary,
     )
+
+    if len(_ANALYSIS_CACHE) >= _MAX_CACHE_SIZE:
+        _ANALYSIS_CACHE.pop(next(iter(_ANALYSIS_CACHE)))
+    _ANALYSIS_CACHE[text_hash] = result
+    return result

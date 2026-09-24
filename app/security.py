@@ -197,3 +197,22 @@ def get_rate_limiter() -> RateLimiter | RedisRateLimiter:
                 pass
         _limiter = RateLimiter(settings.rate_limit_requests, settings.rate_limit_window_seconds)
     return _limiter
+
+
+PROMPT_INJECTION_PATTERNS = [
+    re.compile(r"(?i)\bignore\s+(all\s+)?(previous|prior|above)\s+instructions\b"),
+    re.compile(r"(?i)\bsystem\s+prompt\b"),
+    re.compile(r"(?i)\byou\s+are\s+now\s+(DAN|unfiltered|jailbroken)\b"),
+    re.compile(r"(?i)\bdisregard\s+(the\s+)?(rules|instructions)\b"),
+]
+
+
+def sanitize_user_input(text: str) -> str:
+    """Sanitize user input against prompt injection attacks and XSS script tags."""
+    if not text:
+        return ""
+    text = re.sub(r"(?i)<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>", "", text)
+    for pattern in PROMPT_INJECTION_PATTERNS:
+        text = pattern.sub("[REDACTED_INJECTION]", text)
+    return text.strip()
+
