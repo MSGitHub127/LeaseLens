@@ -14,6 +14,9 @@ class Settings(BaseSettings):
     app_name: str = "LeaseLens API"
     environment: str = "development"  # development | staging | production
     database_url: str = "sqlite:///./leaselens.db"
+    db_pool_size: int = 10
+    db_max_overflow: int = 20
+    db_pool_recycle: int = 3600
 
     # --- Security ---
     # 32+ byte random secret used to sign session tokens. MUST be overridden

@@ -66,3 +66,22 @@ def test_plain_language_summary_mentions_missing_items(sample_lease_text):
     findings = provider.extract_clauses(sample_lease_text, rubric)
     summary = provider.plain_language_summary(sample_lease_text, findings)
     assert isinstance(summary, str) and len(summary) > 0
+
+
+def test_mock_provider_semantic_synonym_retrieval(sample_lease_text):
+    """Verify that MockProvider retrieves relevant chunks even when query uses synonyms."""
+    rubric = get_rubric(DocumentType.RESIDENTIAL_LEASE, "CA")
+    provider = MockProvider()
+    from app.parsing import chunk_text
+
+    chunks = chunk_text(sample_lease_text)
+    # Query uses "security bond" instead of "security deposit"
+    answer = provider.answer_question("what is the security bond amount and return timeline?", chunks, rubric)
+    assert answer.grounded is True
+    assert "$2,400" in answer.answer or any("$2,400" in c for c in answer.citations)
+
+    # Query uses "access premises" instead of "landlord enters"
+    entry_answer = provider.answer_question("when can the owner access premises?", chunks, rubric)
+    assert entry_answer.grounded is True
+    assert "24 hours" in entry_answer.answer or any("24 hours" in c for c in entry_answer.citations)
+

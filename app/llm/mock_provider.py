@@ -66,8 +66,8 @@ class MockProvider(LLMProvider):
         # Extract a window centered on the actual matching terms rather than
         # blindly taking a chunk's opening characters -- a chunk can be large
         # and the relevant sentence may be buried well past the start.
-        q_terms = set(re.findall(r"[a-z']+", question.lower()))
-        windows = [_best_window(chunk, q_terms) for chunk in top_chunks]
+        expanded_terms = _get_expanded_query_terms(question)
+        windows = [_best_window(chunk, expanded_terms) for chunk in top_chunks]
 
         answer = "Based on this document: " + " (...) ".join(windows)
         return QAAnswer(answer=answer, grounded=True, citations=windows, disclaimer=disclaimer)
@@ -99,8 +99,38 @@ class MockProvider(LLMProvider):
         )
 
 
-def _find_excerpt(original_text: str, lowered_text: str, keywords: tuple[str, ...]) -> str | None:
+_LEGAL_SYNONYM_MAP: dict[str, set[str]] = {
+    "deposit": {"security deposit", "damage deposit", "cleaning deposit", "rental bond", "holding deposit"},
+    "notice": {"notice", "written notice", "notification", "in writing", "days notice", "advance notice"},
+    "entry": {"entry", "access", "enter", "enter premises", "inspection", "show unit", "landlord entry"},
+    "eviction": {"evict", "eviction", "vacate", "terminate tenancy", "quit", "unlawful detainer", "cure or quit"},
+    "maintenance": {"maintenance", "repair", "repairs", "habitability", "condition of premises", "plumbing", "appliances"},
+    "rent": {"rent", "monthly rent", "rental payment", "due date", "grace period", "late fee", "late charge"},
+    "pet": {"pet", "pets", "animal", "animals", "dog", "cat", "service animal", "emotional support"},
+    "sublease": {"sublease", "sublet", "assignment", "re-let", "transfer", "assign"},
+    "guest": {"guest", "guests", "visitor", "visitors", "occupant", "unauthorized occupant"},
+    "termination": {"early termination", "break lease", "surrender", "liquidated damages", "cancellation"},
+    "landlord": {"landlord", "owner", "lessor", "property manager", "management"},
+    "tenant": {"tenant", "renter", "lessee", "resident"},
+}
+
+
+def _expand_keywords(keywords: tuple[str, ...]) -> list[str]:
+    """Expand rubric keywords with domain synonyms to enhance retrieval fidelity."""
+    expanded = list(keywords)
     for kw in keywords:
+        kw_lower = kw.lower()
+        for syn_key, syn_set in _LEGAL_SYNONYM_MAP.items():
+            if syn_key in kw_lower:
+                for syn in syn_set:
+                    if syn not in expanded:
+                        expanded.append(syn)
+    return expanded
+
+
+def _find_excerpt(original_text: str, lowered_text: str, keywords: tuple[str, ...]) -> str | None:
+    all_keywords = _expand_keywords(keywords)
+    for kw in all_keywords:
         idx = lowered_text.find(kw.lower())
         if idx != -1:
             start = max(0, idx - 60)
@@ -127,46 +157,74 @@ _STOPWORDS = {
 
 def _best_window(chunk: str, query_terms: set[str], width: int = 220) -> str:
     """Return the sentence (with a little surrounding context) that has the
-    highest overlap with the *distinctive* query terms.
-
-    Ranking by density of matches (rather than by "earliest occurrence of
-    any term") avoids getting stuck on a common word like "landlord" that
-    happens to appear in the chunk's first sentence but has nothing to do
-    with what's actually being asked.
+    highest overlap with the distinctive query terms and domain synonyms.
     """
-    meaningful_terms = {t for t in query_terms if t not in _STOPWORDS and len(t) >= 3}
-    if not meaningful_terms:
-        meaningful_terms = query_terms
+    direct_terms = {t for t in query_terms if t not in _STOPWORDS and len(t) >= 3}
+    expanded = _get_expanded_query_terms(" ".join(query_terms))
+    syn_only = {t for t in expanded if t not in _STOPWORDS and len(t) >= 3} - direct_terms
 
-    sentences = re.split(r"(?<=[.!?])\s+|\n+", chunk)
-    sentences = [s for s in sentences if s.strip()]
+    normalized_chunk = re.sub(r"(?<!\n)\n(?!\n)", " ", chunk)
+    sentences = [s.strip() for s in re.split(r"(?<=[.!?])\s+|\n{2,}", normalized_chunk) if s.strip()]
     if not sentences:
         return chunk.strip()[:width]
 
-    def score(sentence: str) -> int:
-        lowered = sentence.lower()
-        return sum(1 for term in meaningful_terms if term in lowered)
+    def score_sentence(s: str) -> float:
+        s_lower = s.lower()
+        # Deprioritize contract boilerplate preambles ("is entered into between")
+        penalty = -5.0 if "entered into between" in s_lower else 0.0
+        # Boost operational metrics (numbers, hours, days, dollars)
+        metric_boost = 2.0 if re.search(r'\b\d+\s*(?:hours|days|months|weeks|\$)\b', s_lower) else 0.0
+        score = sum(3.0 for t in direct_terms if re.search(r'\b' + re.escape(t), s_lower))
+        score += sum(1.5 for t in syn_only if re.search(r'\b' + re.escape(t), s_lower))
+        return score + metric_boost + penalty
 
-    best_sentence = max(sentences, key=score)
-    if score(best_sentence) == 0:
+    best_sentence = max(sentences, key=score_sentence)
+    if score_sentence(best_sentence) <= 0:
         return chunk.strip()[:width]
 
     idx = chunk.find(best_sentence)
-    start = max(0, idx - 40)
-    end = min(len(chunk), idx + len(best_sentence) + 80)
-    return chunk[start:end].strip()
+    if idx == -1:
+        # Match case-insensitively or on normalized text
+        idx = normalized_chunk.find(best_sentence)
+        if idx != -1:
+            chunk = normalized_chunk
+
+    if idx != -1:
+        start = max(0, idx - 40)
+        end = min(len(chunk), idx + len(best_sentence) + 80)
+        return chunk[start:end].strip()
+
+    return best_sentence[:width]
+
+
+def _get_expanded_query_terms(question: str) -> set[str]:
+    """Extract question terms and expand with legal synonyms for semantic retrieval."""
+    q_lower = question.lower()
+    q_terms = set(re.findall(r"[a-z']+", q_lower))
+    expanded = set(q_terms)
+    for term in q_terms:
+        if term in _STOPWORDS or len(term) < 3:
+            continue
+        for syn_key, syn_set in _LEGAL_SYNONYM_MAP.items():
+            if term == syn_key or term in syn_set or any(term == s.split()[0] for s in syn_set):
+                expanded.add(syn_key)
+                for syn in syn_set:
+                    expanded.update(re.findall(r"[a-z']+", syn.lower()))
+    return expanded
 
 
 def _rank_chunks(question: str, chunks: list[str]) -> list[tuple[str, float]]:
-    """Very small bag-of-words overlap scorer -- see app/rag.py for the
-    slightly richer TF-based version used by the real retrieval path. Kept
-    self-contained here so MockProvider has zero dependency on other modules'
-    internals and is trivially unit-testable in isolation.
+    """Semantic overlap scorer supporting domain synonyms and term specificity.
+    Simulates high-fidelity LLM retrieval during offline testing and air-gapped CI.
     """
     q_terms = set(re.findall(r"[a-z']+", question.lower()))
+    expanded_terms = _get_expanded_query_terms(question)
+
     scored = []
     for chunk in chunks:
         c_terms = re.findall(r"[a-z']+", chunk.lower())
-        overlap = sum(1 for t in c_terms if t in q_terms)
-        scored.append((chunk, overlap / (len(c_terms) + 1)))
+        direct_matches = sum(2.0 for t in c_terms if t in q_terms and t not in _STOPWORDS)
+        syn_matches = sum(1.5 for t in c_terms if t in expanded_terms and t not in q_terms and t not in _STOPWORDS)
+        score = (direct_matches + syn_matches) / (len(c_terms) + 1)
+        scored.append((chunk, score))
     return sorted(scored, key=lambda pair: pair[1], reverse=True)

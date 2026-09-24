@@ -7,7 +7,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from app.config import get_settings
@@ -93,8 +93,27 @@ def create_app() -> FastAPI:
     def health() -> dict:
         return {"status": "ok"}
 
-    # Mount static frontend files for all-in-one container deployment
-    frontend_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "frontend")
+    # Mount static frontend assets and templates for all-in-one container deployment
+    base_dir = os.path.dirname(os.path.dirname(__file__))
+    frontend_dir = os.path.join(base_dir, "frontend")
+    static_dir = os.path.join(os.path.dirname(__file__), "static")
+    templates_dir = os.path.join(os.path.dirname(__file__), "templates")
+
+    if os.path.isdir(static_dir):
+        app.mount("/static", StaticFiles(directory=static_dir), name="static")
+
+    @app.get("/", response_class=FileResponse, include_in_schema=False)
+    def serve_frontend_root():
+        index_candidates = [
+            os.path.join(frontend_dir, "index.html"),
+            os.path.join(templates_dir, "index.html"),
+            os.path.join(base_dir, "index.html"),
+        ]
+        for candidate in index_candidates:
+            if os.path.isfile(candidate):
+                return FileResponse(candidate, media_type="text/html")
+        return JSONResponse(status_code=404, content={"detail": "Frontend UI index not found"})
+
     if os.path.isdir(frontend_dir):
         app.mount("/", StaticFiles(directory=frontend_dir, html=True), name="frontend")
 

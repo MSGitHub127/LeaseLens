@@ -1,0 +1,26 @@
+{
+  "name": "leaselens-frontend",
+  "version": "1.0.0",
+  "description": "WCAG 2.1 AAA accessible web interface for LeaseLens legal tenancy assistant",
+  "main": "app.js",
+  "scripts": {
+    "test": "npm run test:a11y",
+    "test:a11y": "pa11y http://localhost:8000 --standard WCAG2AA",
+    "lint": "eslint app.js --env browser",
+    "serve": "python -m http.server 8080"
+  },
+  "keywords": [
+    "accessibility",
+    "wcag-aaa",
+    "screen-reader",
+    "aria",
+    "legal-assistant",
+    "voice-assistance"
+  ],
+  "author": "LeaseLens Team",
+  "license": "MIT",
+  "devDependencies": {
+    "pa11y": "^8.0.0",
+    "axe-core": "^4.10.0"
+  }
+}

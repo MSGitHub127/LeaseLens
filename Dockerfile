@@ -10,6 +10,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY app ./app
 COPY frontend ./frontend
 COPY assets ./assets
+COPY index.html ./index.html
 
 RUN mkdir -p /app/data && chown -R appuser:appuser /app
 USER appuser

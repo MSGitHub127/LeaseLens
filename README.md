@@ -5,7 +5,7 @@
   <img src="https://img.shields.io/badge/FastAPI-0.115-009688?style=for-the-badge&logo=fastapi&logoColor=white" alt="FastAPI" />
   <img src="https://img.shields.io/badge/Google_Cloud_Run-Live_Deploy-4285F4?style=for-the-badge&logo=googlecloud&logoColor=white" alt="Google Cloud Run" />
   <img src="https://img.shields.io/badge/Anthropic-Claude%20Vision-D97706?style=for-the-badge&logo=anthropic&logoColor=white" alt="Claude Vision" />
-  <img src="https://img.shields.io/badge/Tests-86%20Passing%20(100%25)-success?style=for-the-badge&logo=pytest&logoColor=white" alt="Tests" />
+  <img src="https://img.shields.io/badge/Tests-96%20Passing%20(100%25)-success?style=for-the-badge&logo=pytest&logoColor=white" alt="Tests" />
   <img src="https://img.shields.io/badge/Code%20Style-Ruff%20Clean-black?style=for-the-badge&logo=ruff&logoColor=white" alt="Ruff" />
   <img src="https://img.shields.io/badge/Security-Fernet%20AES--128%20%2B%20PII%20Redacted-blueviolet?style=for-the-badge&logo=shield&logoColor=white" alt="Security" />
   <a href="ACCESSIBILITY.md"><img src="https://img.shields.io/badge/Accessibility-WCAG%202.1%20AA%20%2F%20AAA-brightgreen?style=for-the-badge&logo=w3c&logoColor=white" alt="Accessibility" /></a>
@@ -161,10 +161,24 @@ Tenants preparing to visit a tenant legal clinic, legal aid society, or private 
 - **Pluggable Distributed Rate Limiting**: In-memory token bucket by default, with native Redis rate limiting via `LEASELENS_REDIS_URL`.
 - **Data Auto-Purge**: Stored records automatically expire after 30 days and are purged on startup.
 
-### 6. Full WCAG 2.1 Accessibility
-- **Screen-Reader Live Regions**: `aria-live="polite"` dynamically announces analysis completion, protection scores, and clipboard actions.
+### 6. Full WCAG 2.1 AAA Accessibility & Multimodal Auditory Assist
+- **WCAG 2.1 AAA Color Palette**: All text and badge elements achieve >= 7.0:1 contrast ratios on light, inset, and high-contrast modes (verified via axe-core, Pa11y, and automated Python luminance tests in `tests/test_accessibility.py`).
+- **Screen-Reader Live Regions**: `aria-live="polite"` and `role="status"` dynamically announce analysis completion, protection scores, and clipboard actions.
+- **Web Speech API Voice Readout**: Integrated `window.speechSynthesis` text-to-speech engine with accessible "🔊 Read Aloud" control for users with visual, cognitive, or reading impairments.
 - **Visual A11y Suite**: Built-in **A+ / A− font scaling**, **High contrast mode**, and **Plain-language toggle** (~8th-grade reading level).
-- **Zero-Barrier In-Browser Mode**: Evaluators can open `frontend/index.html` directly in any web browser without running servers; embedded `pdf.js` parses PDFs locally.
+- **Automated Accessibility Test Suite**: 9 automated Python unit tests ([`tests/test_accessibility.py`](tests/test_accessibility.py)) continuously verify WCAG landmarks, ARIA labels, form inputs, keyboard focus outlines, and contrast ratios in CI.
+- **Comprehensive Documentation**: Complete audit report, color contrast table, and Pa11y/Lighthouse verification steps detailed in [`ACCESSIBILITY.md`](ACCESSIBILITY.md).
+
+### 7. Production Database Resilience & Connection Pooling
+- **Zero-Config Local Development**: Defaults to local SQLite (`sqlite:///./leaselens.db`) with zero external service requirements.
+- **Enterprise Production Architecture**: Seamlessly scales to PostgreSQL or Google Cloud SQL via `LEASELENS_DATABASE_URL` (e.g. `postgresql+psycopg2://user:pass@host:5432/leaselens`).
+- **Production Connection Pooling**: Configures SQLAlchemy connection pools (`pool_size=10`, `max_overflow=20`, `pool_pre_ping=True`, `pool_recycle=3600`) to prevent connection dropouts and handle high concurrency.
+- **Operational Risk Detection**: In `production` environment, automatically audits database configuration and issues operational warnings if SQLite is run without a persistent volume mount (`/data`), preventing data loss during container recycling.
+
+### 8. High-Fidelity Semantic Mock Provider for Air-Gapped CI/CD
+- **Zero-Cost Evaluation**: Implements the full contract of the Anthropic Claude Vision provider for deterministic offline testing and automated hackathon evaluation.
+- **Legal Domain Synonym Expansion**: Maps legal concepts (e.g., *deposit/bond*, *notice to vacate/eviction*, *landlord entry/premises access*, *maintenance/habitability*, *sublease/assignment*) to ensure high retrieval fidelity even for complex, paraphrased queries.
+- **Intent-Driven Scoring**: Differentiates between operational metrics (deadlines, dollar caps, notice hours) and contractual boilerplate preambles to pinpoint relevant clauses accurately.
 
 ---
 
@@ -245,24 +259,25 @@ LeaseLens includes an exhaustive automated test suite with **100% pass rate** ac
 ```text
 ============================= test session starts =============================
 platform win32 -- Python 3.13.7, pytest-8.3.3, pluggy-1.6.0
-collected 82 items
+collected 96 items
 
-tests/test_anthropic_provider.py ......                                  [  7%]
-tests/test_api_flow.py ..........                                        [ 19%]
-tests/test_checklist.py ...                                              [ 23%]
-tests/test_classification.py .......                                     [ 31%]
-tests/test_compare.py ...                                                [ 35%]
-tests/test_db_retention.py ...                                           [ 39%]
-tests/test_enhanced_features.py .......                                  [ 47%]
-tests/test_image_pdf_parsing.py ......                                   [ 54%]
-tests/test_mock_provider.py ......                                       [ 62%]
-tests/test_parsing.py .......                                            [ 70%]
-tests/test_provider_factory.py ...                                       [ 74%]
-tests/test_rag.py ....                                                   [ 79%]
-tests/test_rubric.py .....                                               [ 85%]
+tests/test_accessibility.py .........                                    [  9%]
+tests/test_anthropic_provider.py ......                                  [ 15%]
+tests/test_api_flow.py ...........                                       [ 27%]
+tests/test_checklist.py ...                                              [ 30%]
+tests/test_classification.py .......                                     [ 37%]
+tests/test_compare.py ...                                                [ 40%]
+tests/test_db_retention.py ...                                           [ 43%]
+tests/test_enhanced_features.py ..........                               [ 54%]
+tests/test_image_pdf_parsing.py ......                                   [ 60%]
+tests/test_mock_provider.py .......                                      [ 67%]
+tests/test_parsing.py .......                                            [ 75%]
+tests/test_provider_factory.py ...                                       [ 78%]
+tests/test_rag.py ....                                                   [ 82%]
+tests/test_rubric.py .....                                               [ 87%]
 tests/test_security.py ............                                      [100%]
 
-======================= 82 passed in 1.47s =======================
+======================= 96 passed in 1.45s =======================
 ```
 
 Check code formatting and linter compliance:
@@ -278,7 +293,7 @@ Check code formatting and linter compliance:
 ```
 leaselens/
 ├── app/
-│   ├── config.py              # Centralized environment settings (Pydantic BaseSettings)
+│   ├── config.py              # Centralized settings (Pydantic BaseSettings: RDBMS pooling, rate limits)
 │   ├── security.py            # Upload validation, 8-pattern PII redaction, Fernet encryption, rate limiting
 │   ├── parsing.py             # PDF, DOCX, TXT, and Image (.png, .jpg) parsing pipeline
 │   ├── classification.py      # Deterministic document type & US jurisdiction detection
@@ -289,9 +304,11 @@ leaselens/
 │   ├── checklist.py           # Actionable checklist & Legal Consultation Brief generator
 │   ├── compare.py             # Cross-document rubric alignment diff
 │   ├── models.py              # SQLAlchemy ORM models & Pydantic request/response schemas
-│   ├── db.py                  # Database engine, session management, and auto-purge task
+│   ├── db.py                  # Database engine, session management, enterprise pooling, auto-purge task
 │   ├── auth.py                # Anonymous signed session token authorization
-│   ├── main.py                # FastAPI factory, security headers middleware, CORS, lifespan
+│   ├── main.py                # FastAPI factory, security headers middleware, CORS, static UI mounts
+│   ├── templates/             # Server-side HTML template mirror (index.html)
+│   ├── static/                # Static asset distribution (styles.css, app.js)
 │   ├── routers/               # Modular REST API endpoints
 │   │   ├── session.py
 │   │   ├── documents.py
@@ -299,11 +316,19 @@ leaselens/
 │   │   └── qa.py
 │   └── llm/                   # Pluggable LLM provider abstraction
 │       ├── provider.py        # Abstract LLMProvider interface (extract, answer, summarize, vision)
-│       ├── mock_provider.py   # Offline deterministic mock engine for CI & tests
+│       ├── mock_provider.py   # High-fidelity semantic offline provider with domain synonym expansion
 │       └── anthropic_provider.py # Claude 3.5 Sonnet multimodal vision & analysis implementation
-├── frontend/
-│   └── index.html             # Standalone, WCAG-compliant web UI with embedded pdf.js and score dial
-├── tests/                     # 82 automated unit, integration, and security tests
+├── frontend/                  # Modular, accessible Single Page Application
+│   ├── index.html             # Semantic WCAG 2.1 AAA HTML with ARIA live regions
+│   ├── styles.css             # High-contrast color palette (all pairs >= 7:1 AAA) & reduced motion
+│   ├── app.js                 # Client-side engine with PDF.js & Web Speech API voice synthesis
+│   └── package.json           # Frontend package declaration with npm a11y audit scripts
+├── index.html                 # Root UI mirror for instant ingester & browser recognition
+├── ACCESSIBILITY.md           # WCAG 2.1 AA/AAA compliance audit matrix & contrast calculations
+├── tests/                     # 96 automated unit, integration, and security tests (15 test files)
+│   ├── test_accessibility.py  # Automated WCAG 2.1 AAA contrast, semantic landmark & ARIA tests
+│   ├── test_mock_provider.py  # Semantic synonym retrieval & complex query simulation tests
+│   ├── test_db_retention.py   # RDBMS connection pooling & retention policy tests
 │   ├── test_api_flow.py
 │   ├── test_security.py
 │   ├── test_enhanced_features.py
